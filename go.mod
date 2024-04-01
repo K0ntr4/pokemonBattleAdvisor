@@ -1,4 +1,4 @@
-module C/Users/Luca/OneDrive/Dokumente/Code/PokemonBattleAdvisor
+module github.com/K0ntr4/pokemon_battle_advisor
 
 go 1.22.1
 
