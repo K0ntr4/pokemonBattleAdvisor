@@ -8,6 +8,42 @@ import (
 	"github.com/mtslzr/pokeapi-go/structs"
 )
 
+func castToHelperStructsPokemon(pokemon structs.Pokemon) (p helperStructs.Pokemon) {
+	var randomIndex int
+
+	p.Name = pokemon.Name
+	randomIndex = rand.Intn(len(pokemon.Abilities))
+	p.Ability = pokemon.Abilities[randomIndex].Ability.Name
+	var i int
+	for i = 0; i < 4 && i < len(pokemon.Moves); i++ {
+		randomIndex = rand.Intn(len(pokemon.Moves))
+		p.Moves = append(p.Moves, helperStructs.Move{Name: pokemon.Moves[randomIndex].Move.Name})
+	}
+	return p
+}
+
+func GetRandomEnemyPokemon(bounds ...int) (pokemon helperStructs.Pokemon, err error) {
+	// Set default bounds if not provided
+	switch len(bounds) {
+	case 0:
+		bounds = []int{0, 493} // Default to gen 4
+	case 1:
+		bounds = append(bounds, 493)
+	}
+
+	// Fetch list of Pokémon
+	var pokemonList structs.Resource
+	pokemonList, err = pokeapi.Resource("pokemon", bounds[0], bounds[1])
+	if err != nil {
+		return pokemon, err
+	}
+
+	var res structs.Pokemon
+	res, err = pokeapi.Pokemon(pokemonList.Results[rand.Intn(len(pokemonList.Results))].Name)
+	pokemon = castToHelperStructsPokemon(res)
+	return pokemon, err
+}
+
 func getRandomTeam(bounds []int) (team []structs.Pokemon, err error) {
 	// Fetch list of Pokémon within the given bounds
 	var pokemonList structs.Resource
@@ -30,7 +66,6 @@ func getRandomTeam(bounds []int) (team []structs.Pokemon, err error) {
 
 func GetRandomParty(bounds ...int) (party []helperStructs.Pokemon, err error) {
 	var randomTeam []structs.Pokemon
-	var randomIndex int
 
 	// Set default bounds if not provided
 	switch len(bounds) {
@@ -42,33 +77,29 @@ func GetRandomParty(bounds ...int) (party []helperStructs.Pokemon, err error) {
 
 	randomTeam, err = getRandomTeam(bounds)
 	for _, pokemon := range randomTeam {
-		var p helperStructs.Pokemon
-		p.Name = pokemon.Name
-		randomIndex = rand.Intn(len(pokemon.Abilities))
-		p.Ability = pokemon.Abilities[randomIndex].Ability.Name
-		var i int
-		for i = 0; i < 4 && i < len(pokemon.Moves); i++ {
-			randomIndex = rand.Intn(len(pokemon.Moves))
-			p.Moves = append(p.Moves, helperStructs.Move{Name: pokemon.Moves[randomIndex].Move.Name})
-		}
+		var p helperStructs.Pokemon = castToHelperStructsPokemon(pokemon)
 		party = append(party, p)
 	}
 	return party, err
 }
 
+func PrintHelperStructsPokemon(pokemon helperStructs.Pokemon) {
+	println(pokemon.Name)
+	for range pokemon.Name {
+		print("-")
+	}
+	println()
+	println("Ability: ")
+	println(pokemon.Ability)
+	println("Moves:")
+	for _, move := range pokemon.Moves {
+		println(move.Name)
+	}
+	println()
+}
+
 func PrintParty(party []helperStructs.Pokemon) {
 	for _, pokemon := range party {
-		println(pokemon.Name)
-		for range pokemon.Name {
-			print("-")
-		}
-		println()
-		println("Ability: ")
-		println(pokemon.Ability)
-		println("Moves:")
-		for _, move := range pokemon.Moves {
-			println(move.Name)
-		}
-		println()
+		PrintHelperStructsPokemon(pokemon)
 	}
 }

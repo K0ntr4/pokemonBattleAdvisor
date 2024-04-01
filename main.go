@@ -13,4 +13,12 @@ func main() {
 		panic(err)
 	}
 	src.PrintParty(party)
+
+	println("Enemy Pokemon:")
+	var enemy helperStructs.Pokemon
+	enemy, err = src.GetRandomEnemyPokemon(0, 493)
+	if err != nil {
+		panic(err)
+	}
+	src.PrintHelperStructsPokemon(enemy)
 }
