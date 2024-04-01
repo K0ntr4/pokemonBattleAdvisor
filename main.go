@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/K0ntr4/pokemon_battle_advisor/helperStructs"
 	"github.com/K0ntr4/pokemon_battle_advisor/src"
 )
@@ -21,4 +23,9 @@ func main() {
 		panic(err)
 	}
 	src.PrintHelperStructsPokemon(enemy)
+
+	for _, move := range party[0].Moves {
+		print(move.Name + " - " + move.Type + " - ")
+		fmt.Printf("%f\n", move.EffectivenessAgainst(enemy))
+	}
 }

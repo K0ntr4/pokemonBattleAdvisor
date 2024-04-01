@@ -12,12 +12,20 @@ func castToHelperStructsPokemon(pokemon structs.Pokemon) (p helperStructs.Pokemo
 	var randomIndex int
 
 	p.Name = pokemon.Name
-	randomIndex = rand.Intn(len(pokemon.Abilities))
-	p.Ability = pokemon.Abilities[randomIndex].Ability.Name
+	for i := 0; i < len(pokemon.Abilities); i++ {
+		p.Abilities = append(p.Abilities, pokemon.Abilities[i].Ability.Name)
+	}
 	var i int
 	for i = 0; i < 4 && i < len(pokemon.Moves); i++ {
 		randomIndex = rand.Intn(len(pokemon.Moves))
-		p.Moves = append(p.Moves, helperStructs.Move{Name: pokemon.Moves[randomIndex].Move.Name})
+		move, err := pokeapi.Move(pokemon.Moves[randomIndex].Move.Name)
+		if err != nil {
+			continue
+		}
+		p.Moves = append(p.Moves, helperStructs.Move{Name: pokemon.Moves[randomIndex].Move.Name, Type: move.Type.Name})
+	}
+	for i := 0; i < len(pokemon.Types); i++ {
+		p.Types = append(p.Types, pokemon.Types[i].Type.Name)
 	}
 	return p
 }
@@ -89,8 +97,14 @@ func PrintHelperStructsPokemon(pokemon helperStructs.Pokemon) {
 		print("-")
 	}
 	println()
-	println("Ability: ")
-	println(pokemon.Ability)
+	println("Types: ")
+	for _, t := range pokemon.Types {
+		println(t)
+	}
+	println("Abilities: ")
+	for _, ability := range pokemon.Abilities {
+		println(ability)
+	}
 	println("Moves:")
 	for _, move := range pokemon.Moves {
 		println(move.Name)
