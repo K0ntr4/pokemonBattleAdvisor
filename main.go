@@ -32,9 +32,16 @@ func main() {
 	}
 	for _, pokemon := range party {
 		println(pokemon.Name)
+		for range pokemon.Name {
+			print("-")
+		}
+		println()
+		println("Ability: ")
 		println(pokemon.Ability)
+		println("Moves:")
 		for _, move := range pokemon.Moves {
 			println(move.Name)
 		}
+		println()
 	}
 }
