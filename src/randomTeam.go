@@ -1,4 +1,4 @@
-package team
+package src
 
 import (
 	"math/rand"
@@ -7,7 +7,7 @@ import (
 	"github.com/mtslzr/pokeapi-go/structs"
 )
 
-func GetRandomTeam(bounds ...int) []structs.Pokemon {
+func GetRandomTeam(bounds ...int) (team []structs.Pokemon, err error) {
 	// Set default bounds if not provided
 	switch len(bounds) {
 	case 0:
@@ -17,20 +17,20 @@ func GetRandomTeam(bounds ...int) []structs.Pokemon {
 	}
 
 	// Fetch list of Pokémon within the given bounds
-	pokemonList, err := pokeapi.Resource("pokemon", bounds[0], bounds[1])
+	var pokemonList structs.Resource
+	pokemonList, err = pokeapi.Resource("pokemon", bounds[0], bounds[1])
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
-	var team []structs.Pokemon
+	var pokemon structs.Pokemon
 	for i := 0; i < 6; i++ {
-		randomIndex := rand.Intn(len(pokemonList.Results))
-		pokemon, err := pokeapi.Pokemon(pokemonList.Results[randomIndex].Name)
+		var randomIndex int = rand.Intn(len(pokemonList.Results))
+		pokemon, err = pokeapi.Pokemon(pokemonList.Results[randomIndex].Name)
 		if err != nil {
 			continue
 		}
 		team = append(team, pokemon)
 	}
-
-	return team
+	return team, err
 }

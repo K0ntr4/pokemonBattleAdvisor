@@ -1,4 +1,4 @@
-module github.com/K0ntr4/pokemon_battle_advisor
+module github.com/K0ntr4/pokemon_battle_advisor/src
 
 go 1.22.1
 
