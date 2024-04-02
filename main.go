@@ -14,7 +14,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	src.PrintParty(party)
+	src.PrintHelperStructsPokemon(&party[0])
 
 	println("Enemy Pokemon:")
 	var enemy helperStructs.Pokemon
@@ -22,10 +22,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	src.PrintHelperStructsPokemon(enemy)
+	src.PrintHelperStructsPokemon(&enemy)
 
 	for _, move := range party[0].Moves {
 		print(move.Name + " - " + move.Type + " - ")
-		fmt.Printf("%f\n", move.EffectivenessAgainst(enemy))
+		fmt.Printf("%f\n", move.EffectivenessAgainst(&enemy, &party[0].Abilities))
 	}
 }

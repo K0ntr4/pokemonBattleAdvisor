@@ -8,7 +8,7 @@ import (
 	"github.com/mtslzr/pokeapi-go/structs"
 )
 
-func castToHelperStructsPokemon(pokemon structs.Pokemon) (p helperStructs.Pokemon) {
+func CastToHelperStructsPokemon(pokemon structs.Pokemon) (p helperStructs.Pokemon) {
 	var randomIndex int
 
 	p.Name = pokemon.Name
@@ -48,11 +48,11 @@ func GetRandomEnemyPokemon(bounds ...int) (pokemon helperStructs.Pokemon, err er
 
 	var res structs.Pokemon
 	res, err = pokeapi.Pokemon(pokemonList.Results[rand.Intn(len(pokemonList.Results))].Name)
-	pokemon = castToHelperStructsPokemon(res)
+	pokemon = CastToHelperStructsPokemon(res)
 	return pokemon, err
 }
 
-func getRandomTeam(bounds []int) (team []structs.Pokemon, err error) {
+func GetRandomTeam(bounds []int) (team []structs.Pokemon, err error) {
 	// Fetch list of Pokémon within the given bounds
 	var pokemonList structs.Resource
 	pokemonList, err = pokeapi.Resource("pokemon", bounds[0], bounds[1])
@@ -83,15 +83,15 @@ func GetRandomParty(bounds ...int) (party []helperStructs.Pokemon, err error) {
 		bounds = append(bounds, 493)
 	}
 
-	randomTeam, err = getRandomTeam(bounds)
+	randomTeam, err = GetRandomTeam(bounds)
 	for _, pokemon := range randomTeam {
-		var p helperStructs.Pokemon = castToHelperStructsPokemon(pokemon)
+		var p helperStructs.Pokemon = CastToHelperStructsPokemon(pokemon)
 		party = append(party, p)
 	}
 	return party, err
 }
 
-func PrintHelperStructsPokemon(pokemon helperStructs.Pokemon) {
+func PrintHelperStructsPokemon(pokemon *helperStructs.Pokemon) {
 	println(pokemon.Name)
 	for range pokemon.Name {
 		print("-")
@@ -112,8 +112,8 @@ func PrintHelperStructsPokemon(pokemon helperStructs.Pokemon) {
 	println()
 }
 
-func PrintParty(party []helperStructs.Pokemon) {
-	for _, pokemon := range party {
-		PrintHelperStructsPokemon(pokemon)
+func PrintParty(party *[]helperStructs.Pokemon) {
+	for _, pokemon := range *party {
+		PrintHelperStructsPokemon(&pokemon)
 	}
 }
