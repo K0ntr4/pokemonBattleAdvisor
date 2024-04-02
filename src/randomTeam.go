@@ -30,13 +30,7 @@ func CastToHelperStructsPokemon(pokemon structs.Pokemon) (p Pokemon) {
 }
 
 func GetRandomEnemyPokemon(bounds ...int) (pokemon Pokemon, err error) {
-	// Set default bounds if not provided
-	switch len(bounds) {
-	case 0:
-		bounds = []int{0, 493} // Default to gen 4
-	case 1:
-		bounds = append(bounds, 493)
-	}
+	SetDefaultBounds(&bounds)
 
 	// Fetch list of Pokémon
 	var pokemonList structs.Resource
@@ -74,13 +68,7 @@ func GetRandomTeam(bounds []int) (team []structs.Pokemon, err error) {
 func GetRandomParty(bounds ...int) (party []Pokemon, err error) {
 	var randomTeam []structs.Pokemon
 
-	// Set default bounds if not provided
-	switch len(bounds) {
-	case 0:
-		bounds = []int{0, 493} // Default to gen 4
-	case 1:
-		bounds = append(bounds, 493)
-	}
+	SetDefaultBounds(&bounds)
 
 	randomTeam, err = GetRandomTeam(bounds)
 	for _, pokemon := range randomTeam {
