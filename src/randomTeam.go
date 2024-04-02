@@ -1,14 +1,13 @@
-package src
+package pokemon_battle_advisor
 
 import (
 	"math/rand"
 
-	"github.com/K0ntr4/pokemon_battle_advisor/helperStructs"
 	"github.com/mtslzr/pokeapi-go"
 	"github.com/mtslzr/pokeapi-go/structs"
 )
 
-func CastToHelperStructsPokemon(pokemon structs.Pokemon) (p helperStructs.Pokemon) {
+func CastToHelperStructsPokemon(pokemon structs.Pokemon) (p Pokemon) {
 	var randomIndex int
 
 	p.Name = pokemon.Name
@@ -22,7 +21,7 @@ func CastToHelperStructsPokemon(pokemon structs.Pokemon) (p helperStructs.Pokemo
 		if err != nil {
 			continue
 		}
-		p.Moves = append(p.Moves, helperStructs.Move{Name: pokemon.Moves[randomIndex].Move.Name, Type: move.Type.Name})
+		p.Moves = append(p.Moves, Move{Name: pokemon.Moves[randomIndex].Move.Name, Type: move.Type.Name})
 	}
 	for i := 0; i < len(pokemon.Types); i++ {
 		p.Types = append(p.Types, pokemon.Types[i].Type.Name)
@@ -30,7 +29,7 @@ func CastToHelperStructsPokemon(pokemon structs.Pokemon) (p helperStructs.Pokemo
 	return p
 }
 
-func GetRandomEnemyPokemon(bounds ...int) (pokemon helperStructs.Pokemon, err error) {
+func GetRandomEnemyPokemon(bounds ...int) (pokemon Pokemon, err error) {
 	// Set default bounds if not provided
 	switch len(bounds) {
 	case 0:
@@ -72,7 +71,7 @@ func GetRandomTeam(bounds []int) (team []structs.Pokemon, err error) {
 	return team, err
 }
 
-func GetRandomParty(bounds ...int) (party []helperStructs.Pokemon, err error) {
+func GetRandomParty(bounds ...int) (party []Pokemon, err error) {
 	var randomTeam []structs.Pokemon
 
 	// Set default bounds if not provided
@@ -85,13 +84,13 @@ func GetRandomParty(bounds ...int) (party []helperStructs.Pokemon, err error) {
 
 	randomTeam, err = GetRandomTeam(bounds)
 	for _, pokemon := range randomTeam {
-		var p helperStructs.Pokemon = CastToHelperStructsPokemon(pokemon)
+		var p Pokemon = CastToHelperStructsPokemon(pokemon)
 		party = append(party, p)
 	}
 	return party, err
 }
 
-func PrintHelperStructsPokemon(pokemon *helperStructs.Pokemon) {
+func PrintHelperStructsPokemon(pokemon *Pokemon) {
 	println(pokemon.Name)
 	for range pokemon.Name {
 		print("-")
@@ -112,7 +111,7 @@ func PrintHelperStructsPokemon(pokemon *helperStructs.Pokemon) {
 	println()
 }
 
-func PrintParty(party *[]helperStructs.Pokemon) {
+func PrintParty(party *[]Pokemon) {
 	for _, pokemon := range *party {
 		PrintHelperStructsPokemon(&pokemon)
 	}

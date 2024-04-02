@@ -1,10 +1,9 @@
-package src_test
+package tests_test
 
 import (
 	"slices"
 	"testing"
 
-	"github.com/K0ntr4/pokemon_battle_advisor/helperStructs"
 	"github.com/K0ntr4/pokemon_battle_advisor/src"
 	"github.com/mtslzr/pokeapi-go/structs"
 )
@@ -181,17 +180,17 @@ func TestCastToHelperStructsPokemon(t *testing.T) {
 		Weight: 69,
 	}
 
-	expected := helperStructs.Pokemon{
+	expected := pokemon_battle_advisor.Pokemon{
 		Name:      "bulbasaur",
 		Abilities: []string{"overgrow", "sap-sipper"},
-		Moves: []helperStructs.Move{
+		Moves: []pokemon_battle_advisor.Move{
 			{Name: "tackle", Type: "normal"},
 			{Name: "razor-leaf", Type: "grass"},
 		},
 		Types: []string{"grass", "poison"},
 	}
 
-	actual := src.CastToHelperStructsPokemon(p)
+	actual := pokemon_battle_advisor.CastToHelperStructsPokemon(p)
 
 	if actual.Name != expected.Name {
 		t.Errorf("Expected name: %s, got: %s", expected.Name, actual.Name)
@@ -229,7 +228,7 @@ func TestCastToHelperStructsPokemon(t *testing.T) {
 }
 
 func TestGetRandomEnemyPokemon(t *testing.T) {
-	enemy, err := src.GetRandomEnemyPokemon(0, 493)
+	enemy, err := pokemon_battle_advisor.GetRandomEnemyPokemon(0, 493)
 	if err != nil {
 		t.Errorf("Error getting random enemy pokemon: %v", err)
 	}
@@ -268,7 +267,7 @@ func TestGetRandomEnemyPokemon(t *testing.T) {
 }
 
 func TestGetRandomTeam(t *testing.T) {
-	team, err := src.GetRandomTeam([]int{0, 493})
+	team, err := pokemon_battle_advisor.GetRandomTeam([]int{0, 493})
 	if err != nil {
 		t.Errorf("Error getting random team: %v", err)
 	}
@@ -309,7 +308,7 @@ func TestGetRandomTeam(t *testing.T) {
 }
 
 func TestGetRandomParty(t *testing.T) {
-	party, err := src.GetRandomParty(0, 493)
+	party, err := pokemon_battle_advisor.GetRandomParty(0, 493)
 	if err != nil {
 		t.Errorf("Error getting random party: %v", err)
 	}

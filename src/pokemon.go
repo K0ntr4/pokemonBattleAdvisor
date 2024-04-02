@@ -1,4 +1,4 @@
-package helperStructs
+package pokemon_battle_advisor
 
 var (
 	typeEffects = map[string]map[string]float64{
