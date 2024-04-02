@@ -1,7 +1,5 @@
 package helperStructs
 
-import "fmt"
-
 var (
 	typeEffects = map[string]map[string]float64{
 		"normal":   {"fighting": 2.0, "ghost": 0},
@@ -75,7 +73,6 @@ func CalculateTypeEffectiveness(types *[]string, moveType *string, scrappy bool,
 
 func ApplyEnemyPokemonAbilities(abilities *[]string, moveType *string, result *float64) {
 	for _, a := range *abilities {
-		fmt.Printf("ability: %s result: %f\n", a, *result)
 		if a == "wonder-guard" && *result <= 1.0 { // Wonder Guard only allows super effective moves
 			*result = 0.0
 			return
