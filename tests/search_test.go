@@ -2,7 +2,7 @@ package tests
 
 import (
 	"errors"
-	pokemon_battle_advisor "github.com/K0ntr4/pokemon_battle_advisor/src"
+	"github.com/K0ntr4/pokemonBattleAdvisor/src"
 	"testing"
 )
 
@@ -41,12 +41,13 @@ func TestFuzzySearchPokemon(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			pokemon, err := pokemon_battle_advisor.FuzzySearchPokemon(tc.actualName)
-			if tc.expectedErr == nil && err != nil {
+			pokemon, err := pokemonbattleadvisor.FuzzySearchPokemon(tc.actualName)
+			switch {
+			case tc.expectedErr == nil && err != nil:
 				t.Errorf("Expected no error, got %s for %s", err, tc.expectedName)
-			} else if tc.expectedErr != nil && err == nil {
+			case tc.expectedErr != nil && err == nil:
 				t.Errorf("Expected error %s, got nil for %s", tc.expectedErr, tc.expectedName)
-			} else if tc.expectedErr != nil && err != nil && tc.expectedErr.Error() != err.Error() {
+			case tc.expectedErr != nil && err != nil && tc.expectedErr.Error() != err.Error():
 				t.Errorf("Expected error %s, got %s for %s", tc.expectedErr, err, tc.expectedName)
 			}
 

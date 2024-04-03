@@ -2,27 +2,26 @@ package main
 
 import (
 	"fmt"
-
-	"github.com/K0ntr4/pokemon_battle_advisor/src"
+	"github.com/K0ntr4/pokemonBattleAdvisor/src"
 )
 
 func main() {
 	var err error
-	var party []pokemon_battle_advisor.Pokemon
+	var party []pokemonbattleadvisor.Pokemon
 
-	party, err = pokemon_battle_advisor.GetRandomParty(0, 493)
+	party, err = pokemonbattleadvisor.GetRandomParty(0, 493)
 	if err != nil {
 		panic(err)
 	}
-	pokemon_battle_advisor.PrintParty(&party)
+	pokemonbattleadvisor.PrintParty(&party)
 
 	println("Enemy Pokemon:")
-	var enemy pokemon_battle_advisor.Pokemon
-	enemy, err = pokemon_battle_advisor.GetRandomEnemyPokemon(0, 493)
+	var enemy pokemonbattleadvisor.Pokemon
+	enemy, err = pokemonbattleadvisor.GetRandomEnemyPokemon(0, 493)
 	if err != nil {
 		panic(err)
 	}
-	pokemon_battle_advisor.PrintHelperStructsPokemon(&enemy)
+	pokemonbattleadvisor.PrintHelperStructsPokemon(&enemy)
 
 	for _, move := range party[0].Moves {
 		print(move.Name + " - " + move.Type + " - ")

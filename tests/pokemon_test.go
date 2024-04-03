@@ -1,7 +1,7 @@
 package tests_test
 
 import (
-	"github.com/K0ntr4/pokemon_battle_advisor/src"
+	"github.com/K0ntr4/pokemonBattleAdvisor/src"
 	"testing"
 )
 
@@ -37,17 +37,18 @@ func TestApplySpecialAbilities(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			moveType := tc.moveType
+		testCase := tc // capture range variable
+		t.Run(testCase.name, func(t *testing.T) {
+			moveType := testCase.moveType
 			scrappy := false
-			pokemon_battle_advisor.ApplySpecialAbilities(&tc.attackerAbilities, &moveType, &scrappy)
+			pokemonbattleadvisor.ApplySpecialAbilities(&testCase.attackerAbilities, &moveType, &scrappy)
 
-			if moveType != tc.expectedMoveType {
-				t.Errorf("Expected move type to be %s, got %s", tc.expectedMoveType, moveType)
+			if moveType != testCase.expectedMoveType {
+				t.Errorf("Expected move type to be %s, got %s", testCase.expectedMoveType, moveType)
 			}
 
-			if scrappy != tc.expectedScrappy {
-				t.Errorf("Expected scrappy to be %t, got %t", tc.expectedScrappy, scrappy)
+			if scrappy != testCase.expectedScrappy {
+				t.Errorf("Expected scrappy to be %t, got %t", testCase.expectedScrappy, scrappy)
 			}
 		})
 	}
@@ -89,11 +90,12 @@ func TestCalculateTypeEffectiveness(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
+		testCase := tc // capture range variable
+		t.Run(testCase.name, func(t *testing.T) {
 			result := 1.0
-			pokemon_battle_advisor.CalculateTypeEffectiveness(&tc.enemyTypes, &tc.moveType, tc.scrappy, &result)
-			if result != tc.expectedResult {
-				t.Errorf("Expected effectiveness to be %f, got %f", tc.expectedResult, result)
+			pokemonbattleadvisor.CalculateTypeEffectiveness(&testCase.enemyTypes, &testCase.moveType, testCase.scrappy, &result)
+			if result != testCase.expectedResult {
+				t.Errorf("Expected effectiveness to be %f, got %f", testCase.expectedResult, result)
 			}
 		})
 	}
@@ -127,11 +129,12 @@ func TestApplyEnemyPokemonAbilities(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
+		testCase := tc // capture range variable
+		t.Run(testCase.name, func(t *testing.T) {
 			result := 1.0
-			pokemon_battle_advisor.ApplyEnemyPokemonAbilities(&tc.enemyAbilities, &tc.moveType, &result)
-			if result != tc.expectedResult {
-				t.Errorf("Expected effectiveness to be %f, got %f", tc.expectedResult, result)
+			pokemonbattleadvisor.ApplyEnemyPokemonAbilities(&testCase.enemyAbilities, &testCase.moveType, &result)
+			if result != testCase.expectedResult {
+				t.Errorf("Expected effectiveness to be %f, got %f", testCase.expectedResult, result)
 			}
 		})
 	}
@@ -140,17 +143,17 @@ func TestApplyEnemyPokemonAbilities(t *testing.T) {
 func TestMove_EffectivenessAgainst(t *testing.T) {
 	testCases := []struct {
 		name           string
-		move           pokemon_battle_advisor.Move
-		pokemon        pokemon_battle_advisor.Pokemon
+		move           pokemonbattleadvisor.Move
+		pokemon        pokemonbattleadvisor.Pokemon
 		attackerAbil   []string
 		expectedResult float64
 	}{
 		{
 			name: "Normal move against Normal type",
-			move: pokemon_battle_advisor.Move{Name: "tackle", Type: "normal"},
-			pokemon: pokemon_battle_advisor.Pokemon{
+			move: pokemonbattleadvisor.Move{Name: "tackle", Type: "normal"},
+			pokemon: pokemonbattleadvisor.Pokemon{
 				Abilities: []string{},
-				Moves:     []pokemon_battle_advisor.Move{},
+				Moves:     []pokemonbattleadvisor.Move{},
 				Types:     []string{"normal"},
 				Name:      "Snorlax",
 			},
@@ -159,10 +162,10 @@ func TestMove_EffectivenessAgainst(t *testing.T) {
 		},
 		{
 			name: "Fire move against Grass type",
-			move: pokemon_battle_advisor.Move{Name: "ember", Type: "fire"},
-			pokemon: pokemon_battle_advisor.Pokemon{
+			move: pokemonbattleadvisor.Move{Name: "ember", Type: "fire"},
+			pokemon: pokemonbattleadvisor.Pokemon{
 				Abilities: []string{},
-				Moves:     []pokemon_battle_advisor.Move{},
+				Moves:     []pokemonbattleadvisor.Move{},
 				Types:     []string{"grass"},
 				Name:      "Bulbasaur",
 			},
@@ -171,10 +174,10 @@ func TestMove_EffectivenessAgainst(t *testing.T) {
 		},
 		{
 			name: "Electric move against Water type with ability Volt Absorb",
-			move: pokemon_battle_advisor.Move{Name: "thunderbolt", Type: "electric"},
-			pokemon: pokemon_battle_advisor.Pokemon{
+			move: pokemonbattleadvisor.Move{Name: "thunderbolt", Type: "electric"},
+			pokemon: pokemonbattleadvisor.Pokemon{
 				Abilities: []string{"volt-absorb"},
-				Moves:     []pokemon_battle_advisor.Move{},
+				Moves:     []pokemonbattleadvisor.Move{},
 				Types:     []string{"water"},
 				Name:      "Lanturn",
 			},
@@ -183,10 +186,10 @@ func TestMove_EffectivenessAgainst(t *testing.T) {
 		},
 		{
 			name: "Fighting move against Ghost type with ability Scrappy",
-			move: pokemon_battle_advisor.Move{Name: "karate-chop", Type: "fighting"},
-			pokemon: pokemon_battle_advisor.Pokemon{
+			move: pokemonbattleadvisor.Move{Name: "karate-chop", Type: "fighting"},
+			pokemon: pokemonbattleadvisor.Pokemon{
 				Abilities: []string{},
-				Moves:     []pokemon_battle_advisor.Move{},
+				Moves:     []pokemonbattleadvisor.Move{},
 				Types:     []string{"ghost"},
 				Name:      "Gengar",
 			},
@@ -195,10 +198,10 @@ func TestMove_EffectivenessAgainst(t *testing.T) {
 		},
 		{
 			name: "Fairy move against Dragon type with ability Wonder Guard",
-			move: pokemon_battle_advisor.Move{Name: "moonblast", Type: "fairy"},
-			pokemon: pokemon_battle_advisor.Pokemon{
+			move: pokemonbattleadvisor.Move{Name: "moonblast", Type: "fairy"},
+			pokemon: pokemonbattleadvisor.Pokemon{
 				Abilities: []string{"wonder-guard"},
-				Moves:     []pokemon_battle_advisor.Move{},
+				Moves:     []pokemonbattleadvisor.Move{},
 				Types:     []string{"dragon"},
 				Name:      "Dragonite",
 			},
@@ -207,10 +210,10 @@ func TestMove_EffectivenessAgainst(t *testing.T) {
 		},
 		{
 			name: "Water move against Bug type with ability Wonder Guard",
-			move: pokemon_battle_advisor.Move{Name: "surf", Type: "water"},
-			pokemon: pokemon_battle_advisor.Pokemon{
+			move: pokemonbattleadvisor.Move{Name: "surf", Type: "water"},
+			pokemon: pokemonbattleadvisor.Pokemon{
 				Abilities: []string{"wonder-guard"},
-				Moves:     []pokemon_battle_advisor.Move{},
+				Moves:     []pokemonbattleadvisor.Move{},
 				Types:     []string{"bug"},
 				Name:      "Shuckle",
 			},
@@ -220,10 +223,11 @@ func TestMove_EffectivenessAgainst(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			result := tc.move.EffectivenessAgainst(&tc.pokemon, &tc.attackerAbil)
-			if result != tc.expectedResult {
-				t.Errorf("Expected effectiveness to be %f, got %f", tc.expectedResult, result)
+		testCase := tc // capture range variable
+		t.Run(testCase.name, func(t *testing.T) {
+			result := testCase.move.EffectivenessAgainst(&testCase.pokemon, &testCase.attackerAbil)
+			if result != testCase.expectedResult {
+				t.Errorf("Expected effectiveness to be %f, got %f", testCase.expectedResult, result)
 			}
 		})
 	}

@@ -1,4 +1,4 @@
-package pokemon_battle_advisor
+package pokemonbattleadvisor
 
 import (
 	"errors"
@@ -30,7 +30,7 @@ func FuzzySearchPokemon(pokemonName string, bounds ...int) (pokemon structs.Poke
 		return pokemon, err
 	}
 
-	var pokemonNameList []string = make([]string, len(pokemonList.Results))
+	var pokemonNameList = make([]string, len(pokemonList.Results))
 	for i := 0; i < len(pokemonList.Results); i++ {
 		pokemonNameList[i] = pokemonList.Results[i].Name
 	}
@@ -40,7 +40,7 @@ func FuzzySearchPokemon(pokemonName string, bounds ...int) (pokemon structs.Poke
 	model.SetDepth(3)
 	model.Train(pokemonNameList)
 
-	var name string = model.SpellCheck(pokemonName)
+	var name = model.SpellCheck(pokemonName)
 	if name == "" {
 		return structs.Pokemon{}, errors.New("no pokemon found")
 	}

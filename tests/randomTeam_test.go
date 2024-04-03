@@ -1,10 +1,10 @@
 package tests_test
 
 import (
+	"github.com/K0ntr4/pokemonBattleAdvisor/src"
 	"slices"
 	"testing"
 
-	"github.com/K0ntr4/pokemon_battle_advisor/src"
 	"github.com/mtslzr/pokeapi-go/structs"
 )
 
@@ -180,17 +180,17 @@ func TestCastToHelperStructsPokemon(t *testing.T) {
 		Weight: 69,
 	}
 
-	expected := pokemon_battle_advisor.Pokemon{
+	expected := pokemonbattleadvisor.Pokemon{
 		Name:      "bulbasaur",
 		Abilities: []string{"overgrow", "sap-sipper"},
-		Moves: []pokemon_battle_advisor.Move{
+		Moves: []pokemonbattleadvisor.Move{
 			{Name: "tackle", Type: "normal"},
 			{Name: "razor-leaf", Type: "grass"},
 		},
 		Types: []string{"grass", "poison"},
 	}
 
-	actual := pokemon_battle_advisor.CastToHelperStructsPokemon(p)
+	actual := pokemonbattleadvisor.CastToHelperStructsPokemon(&p)
 
 	if actual.Name != expected.Name {
 		t.Errorf("Expected name: %s, got: %s", expected.Name, actual.Name)
@@ -228,7 +228,7 @@ func TestCastToHelperStructsPokemon(t *testing.T) {
 }
 
 func TestGetRandomEnemyPokemon(t *testing.T) {
-	enemy, err := pokemon_battle_advisor.GetRandomEnemyPokemon(0, 493)
+	enemy, err := pokemonbattleadvisor.GetRandomEnemyPokemon(0, 493)
 	if err != nil {
 		t.Errorf("Error getting random enemy pokemon: %v", err)
 	}
@@ -267,16 +267,16 @@ func TestGetRandomEnemyPokemon(t *testing.T) {
 }
 
 func TestGetRandomTeam(t *testing.T) {
-	team, err := pokemon_battle_advisor.GetRandomTeam([]int{0, 493})
+	team, err := pokemonbattleadvisor.GetRandomTeam([]int{0, 493})
 	if err != nil {
 		t.Errorf("Error getting random team: %v", err)
 	}
 
-	if len(team) == 0 {
+	if len(*team) == 0 {
 		t.Errorf("Expected team to not be empty")
 	}
 
-	for _, pokemon := range team {
+	for _, pokemon := range *team {
 		if pokemon.Name == "" {
 			t.Errorf("Expected pokemon name to not be empty")
 		}
@@ -308,7 +308,7 @@ func TestGetRandomTeam(t *testing.T) {
 }
 
 func TestGetRandomParty(t *testing.T) {
-	party, err := pokemon_battle_advisor.GetRandomParty(0, 493)
+	party, err := pokemonbattleadvisor.GetRandomParty(0, 493)
 	if err != nil {
 		t.Errorf("Error getting random party: %v", err)
 	}

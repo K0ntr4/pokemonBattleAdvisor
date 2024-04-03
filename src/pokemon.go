@@ -1,4 +1,4 @@
-package pokemon_battle_advisor
+package pokemonbattleadvisor
 
 var (
 	typeEffects = map[string]map[string]float64{
@@ -36,10 +36,10 @@ var (
 )
 
 type Pokemon struct {
+	Name      string   `json:"name"`
+	Types     []string `json:"type"`
 	Abilities []string `json:"ability"`
 	Moves     []Move   `json:"moves"`
-	Types     []string `json:"type"`
-	Name      string   `json:"name"`
 }
 
 type Move struct {
@@ -47,8 +47,8 @@ type Move struct {
 	Type string `json:"type"`
 }
 
-func ApplySpecialAbilities(attackerAbilites *[]string, moveType *string, scrappy *bool) {
-	for _, a := range *attackerAbilites {
+func ApplySpecialAbilities(attackerAbilities *[]string, moveType *string, scrappy *bool) {
+	for _, a := range *attackerAbilities {
 		switch a {
 		case "normalize": // Normalize changes all moves to normal type
 			*moveType = "normal"
@@ -90,12 +90,12 @@ func ApplyEnemyPokemonAbilities(abilities *[]string, moveType *string, result *f
 	}
 }
 
-func (m Move) EffectivenessAgainst(pokemon *Pokemon, attackerAbilites *[]string) (result float64) {
+func (m Move) EffectivenessAgainst(pokemon *Pokemon, attackerAbilities *[]string) (result float64) {
 	result = 1.0
-	var moveType string = m.Type
-	var scrappy bool = false
+	var moveType = m.Type
+	var scrappy = false
 
-	ApplySpecialAbilities(attackerAbilites, &moveType, &scrappy)
+	ApplySpecialAbilities(attackerAbilities, &moveType, &scrappy)
 
 	CalculateTypeEffectiveness(&pokemon.Types, &moveType, scrappy, &result)
 
