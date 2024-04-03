@@ -92,7 +92,7 @@ func ApplyEnemyPokemonAbilities(abilities *[]string, moveType *string, result *f
 
 func (m Move) EffectivenessAgainst(pokemon *Pokemon, attackerAbilities *[]string) (result float64) {
 	result = 1.0
-	var moveType = m.Type
+	var moveType string = m.Type
 	var scrappy = false
 
 	ApplySpecialAbilities(attackerAbilities, &moveType, &scrappy)
