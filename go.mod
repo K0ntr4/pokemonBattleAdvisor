@@ -1,6 +1,6 @@
 module github.com/K0ntr4/pokemon_battle_advisor
 
-go 1.22.1
+go 1.22
 
 require (
 	github.com/mtslzr/pokeapi-go v1.4.0
