@@ -15,10 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    
-    - name: Set up Environment Variables
-      env:
-        super_secret: ${{ secrets.HUGGING_FACE_TOKEN }}
   
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -26,7 +22,11 @@ jobs:
         go-version: '1.22'
 
     - name: Build
+      env:
+        super_secret: ${{ secrets.HUGGING_FACE_TOKEN }}
       run: go build -v ./...
 
     - name: Test
+      env:
+        super_secret: ${{ secrets.HUGGING_FACE_TOKEN }}
       run: go test -v ./...
