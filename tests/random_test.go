@@ -227,6 +227,65 @@ func TestCastToHelperStructsPokemon(t *testing.T) {
 	}
 }
 
+func TestGetEnemyPokemonByName(t *testing.T) {
+	testCases := []struct {
+		name              string
+		pokemonName       string
+		expectedName      string
+		expectedAbilities []string
+		expectedTypes     []string
+	}{
+		{
+			name:              "Test get enemy pokemon by name bulbasaur",
+			pokemonName:       "bulbasaur",
+			expectedName:      "bulbasaur",
+			expectedAbilities: []string{"overgrow", "chlorophyll"},
+			expectedTypes:     []string{"grass", "poison"},
+		},
+		{
+			name:              "Test get enemy pokemon by name charmander",
+			pokemonName:       "charmander",
+			expectedName:      "charmander",
+			expectedAbilities: []string{"blaze", "solar-power"},
+			expectedTypes:     []string{"fire"},
+		},
+	}
+
+	for _, tc := range testCases {
+		testCase := tc
+		t.Run(testCase.name, func(t *testing.T) {
+			enemy, err := pokemonbattleadvisor.GetEnemyPokemonByName(testCase.pokemonName)
+			if err != nil {
+				t.Errorf("Error: %v", err)
+			}
+
+			if enemy.Name != testCase.expectedName {
+				t.Errorf("Expected name: %s, got: %s", testCase.expectedName, enemy.Name)
+			}
+
+			if len(enemy.Abilities) != len(testCase.expectedAbilities) {
+				t.Errorf("Expected abilities length: %d, got: %d", len(testCase.expectedAbilities), len(enemy.Abilities))
+			}
+
+			for _, ability := range enemy.Abilities {
+				if !slices.Contains(testCase.expectedAbilities, ability) {
+					t.Errorf("Expected ability: %s, got: %s", testCase.expectedAbilities, ability)
+				}
+			}
+
+			if len(enemy.Types) != len(testCase.expectedTypes) {
+				t.Errorf("Expected types length: %d, got: %d", len(testCase.expectedTypes), len(enemy.Types))
+			}
+
+			for _, typ := range enemy.Types {
+				if !slices.Contains(testCase.expectedTypes, typ) {
+					t.Errorf("Expected type: %s, got: %s", testCase.expectedTypes, typ)
+				}
+			}
+		})
+	}
+}
+
 func TestGetRandomEnemyPokemon(t *testing.T) {
 	enemy, err := pokemonbattleadvisor.GetRandomEnemyPokemon(0, 493)
 	if err != nil {
