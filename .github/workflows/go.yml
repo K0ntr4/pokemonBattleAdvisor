@@ -22,8 +22,6 @@ jobs:
         go-version: '1.22'
 
     - name: Build
-      env:
-        HUGGING_FACE_TOKEN: ${{ secrets.HUGGING_FACE_TOKEN }}
       run: go build -v ./...
 
     - name: Test
