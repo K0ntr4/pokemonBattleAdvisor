@@ -23,10 +23,10 @@ jobs:
 
     - name: Build
       env:
-        super_secret: ${{ secrets.HUGGING_FACE_TOKEN }}
+        HUGGING_FACE_TOKEN: ${{ secrets.HUGGING_FACE_TOKEN }}
       run: go build -v ./...
 
     - name: Test
       env:
-        super_secret: ${{ secrets.HUGGING_FACE_TOKEN }}
+        HUGGING_FACE_TOKEN: ${{ secrets.HUGGING_FACE_TOKEN }}
       run: go test -v ./...
