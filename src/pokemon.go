@@ -43,8 +43,11 @@ type Pokemon struct {
 }
 
 type Move struct {
-	Name string `json:"name"`
-	Type string `json:"type"`
+	Rank     int     `json:"rank"`
+	Name     string  `json:"name"`
+	Type     string  `json:"type"`
+	Damage   int     `json:"damage"`
+	Accuracy float64 `json:"accuracy"`
 }
 
 func ApplySpecialAbilities(attackerAbilities *[]string, moveType *string, scrappy *bool) {

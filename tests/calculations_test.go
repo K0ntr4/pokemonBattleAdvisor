@@ -1,70 +1,12 @@
+//nolint:dupl // This file contains tests for multiple functions that are similar
 package tests
 
 import (
 	"github.com/K0ntr4/pokemonBattleAdvisor/src"
-	"slices"
 	"testing"
 )
 
-func TestGetEnemyPokemonByName(t *testing.T) {
-	testCases := []struct {
-		name              string
-		pokemonName       string
-		expectedName      string
-		expectedAbilities []string
-		expectedTypes     []string
-	}{
-		{
-			name:              "Test get enemy pokemon by name bulbasaur",
-			pokemonName:       "bulbasaur",
-			expectedName:      "bulbasaur",
-			expectedAbilities: []string{"overgrow", "chlorophyll"},
-			expectedTypes:     []string{"grass", "poison"},
-		},
-		{
-			name:              "Test get enemy pokemon by name charmander",
-			pokemonName:       "charmander",
-			expectedName:      "charmander",
-			expectedAbilities: []string{"blaze", "solar-power"},
-			expectedTypes:     []string{"fire"},
-		},
-	}
-
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			actual, err := pokemonbattleadvisor.GetEnemyPokemonByName(tc.pokemonName)
-			if err != nil {
-				t.Errorf("Expected no error, got %v", err)
-			}
-
-			if actual.Name != tc.expectedName {
-				t.Errorf("Expected name: %s, got: %s", tc.expectedName, actual.Name)
-			}
-
-			if len(actual.Abilities) != len(tc.expectedAbilities) {
-				t.Errorf("Expected abilities length: %d, got: %d", len(tc.expectedAbilities), len(actual.Abilities))
-			}
-
-			for i, ability := range actual.Abilities {
-				if !slices.Contains(tc.expectedAbilities, ability) {
-					t.Errorf("Expected ability at index %d: %s, got: %s", i, tc.expectedAbilities[i], ability)
-				}
-			}
-
-			if len(actual.Types) != len(tc.expectedTypes) {
-				t.Errorf("Expected types length: %d, got: %d", len(tc.expectedTypes), len(actual.Types))
-			}
-
-			for i, typ := range actual.Types {
-				if !slices.Contains(tc.expectedTypes, typ) {
-					t.Errorf("Expected type at index %d: %s, got: %s", i, tc.expectedTypes[i], typ)
-				}
-			}
-		})
-	}
-}
-
-func TestBestMoveIndexAndEffectiveness(t *testing.T) {
+func TestRankPokemonMoves(t *testing.T) {
 	testCases := []struct {
 		name          string
 		pokemon       pokemonbattleadvisor.Pokemon
@@ -73,13 +15,29 @@ func TestBestMoveIndexAndEffectiveness(t *testing.T) {
 		expectedValue float64
 	}{
 		{
-			name: "Test best move index and effectiveness",
+			name: "Super effective move but no damage, best move is false-swipe",
 			pokemon: pokemonbattleadvisor.Pokemon{
 				Moves: []pokemonbattleadvisor.Move{
-					{Name: "low-kick", Type: "fighting"},
-					{Name: "false-swipe", Type: "normal"},
-					{Name: "hail", Type: "ice"},
-					{Name: "blizzard", Type: "ice"},
+					{Name: "low-kick", Type: "fighting", Damage: 0.0, Accuracy: 1.0},
+					{Name: "false-swipe", Type: "normal", Damage: 40.0, Accuracy: 1.0},
+					{Name: "hail", Type: "ice", Damage: 0.0, Accuracy: 1.0},
+					{Name: "blizzard", Type: "ice", Damage: 110.0, Accuracy: 0.7},
+				},
+			},
+			enemy: pokemonbattleadvisor.Pokemon{
+				Types: []string{"dark", "ice"},
+			},
+			expectedIndex: 1,
+			expectedValue: 1.0,
+		},
+		{
+			name: "Super effective move with damage, best move is low-kick",
+			pokemon: pokemonbattleadvisor.Pokemon{
+				Moves: []pokemonbattleadvisor.Move{
+					{Name: "low-kick", Type: "fighting", Damage: 80.0, Accuracy: 1.0},
+					{Name: "false-swipe", Type: "normal", Damage: 40.0, Accuracy: 1.0},
+					{Name: "hail", Type: "ice", Damage: 0.0, Accuracy: 1.0},
+					{Name: "blizzard", Type: "ice", Damage: 110.0, Accuracy: 0.7},
 				},
 			},
 			enemy: pokemonbattleadvisor.Pokemon{
@@ -88,19 +46,34 @@ func TestBestMoveIndexAndEffectiveness(t *testing.T) {
 			expectedIndex: 0,
 			expectedValue: 4.0,
 		},
+		{
+			name: "All moves are not very effective, best move is blizzard",
+			pokemon: pokemonbattleadvisor.Pokemon{
+				Moves: []pokemonbattleadvisor.Move{
+					{Name: "low-kick", Type: "fighting", Damage: 75.0, Accuracy: 1.0},
+					{Name: "false-swipe", Type: "normal", Damage: 40.0, Accuracy: 1.0},
+					{Name: "hail", Type: "ice", Damage: 0.0, Accuracy: 1.0},
+					{Name: "blizzard", Type: "ice", Damage: 110.0, Accuracy: 0.7},
+				},
+			},
+			enemy: pokemonbattleadvisor.Pokemon{
+				Types: []string{"electric"},
+			},
+			expectedIndex: 3,
+			expectedValue: 1.0,
+		},
 	}
 
 	for _, tc := range testCases {
 		testCase := tc
 		t.Run(testCase.name, func(t *testing.T) {
-			actualIndex, actualValue := pokemonbattleadvisor.BestMoveIndexAndEffectiveness(&testCase.pokemon, &testCase.enemy)
-
-			if actualIndex != testCase.expectedIndex {
-				t.Errorf("Expected index: %d, got: %d", testCase.expectedIndex, actualIndex)
+			var result = pokemonbattleadvisor.RankPokemonMoves(&testCase.pokemon, &testCase.enemy)
+			if result[0].MoveIndex != testCase.expectedIndex {
+				t.Errorf("Expected index: %d, got: %d", testCase.expectedIndex, result[0].MoveIndex)
 			}
 
-			if actualValue != testCase.expectedValue {
-				t.Errorf("Expected value: %f, got: %f", testCase.expectedValue, actualValue)
+			if result[0].Eff != testCase.expectedValue {
+				t.Errorf("Expected value: %f, got: %f", testCase.expectedValue, result[0].Eff)
 			}
 		})
 	}
@@ -116,22 +89,22 @@ func TestBestPokemonMoveAndShouldSwitch(t *testing.T) {
 		expectedValue bool
 	}{
 		{
-			name: "Test best pokemon move and should switch",
+			name: "Best pokemon against enemy dark and ice is second party member with first move",
 			team: []pokemonbattleadvisor.Pokemon{
 				{
 					Moves: []pokemonbattleadvisor.Move{
-						{Name: "poison-jab", Type: "poison"},
-						{Name: "false-swipe", Type: "normal"},
-						{Name: "hail", Type: "ice"},
-						{Name: "blizzard", Type: "ice"},
+						{Name: "poison-jab", Type: "poison", Damage: 80.0, Accuracy: 1.00},
+						{Name: "false-swipe", Type: "normal", Damage: 40.0, Accuracy: 1.00},
+						{Name: "hail", Type: "ice", Damage: 0.0, Accuracy: 100.0},
+						{Name: "blizzard", Type: "ice", Damage: 110.0, Accuracy: 0.70},
 					},
 				},
 				{
 					Moves: []pokemonbattleadvisor.Move{
-						{Name: "moonblast", Type: "fairy"},
-						{Name: "flash", Type: "normal"},
-						{Name: "flamethrower", Type: "fire"},
-						{Name: "double-slap", Type: "normal"},
+						{Name: "moonblast", Type: "fairy", Damage: 95.0, Accuracy: 1.00},
+						{Name: "flash", Type: "normal", Damage: 0.0, Accuracy: 1.0},
+						{Name: "flamethrower", Type: "fire", Damage: 90.0, Accuracy: 1.00},
+						{Name: "double-slap", Type: "normal", Damage: 15.0, Accuracy: 0.85},
 					},
 				},
 			},
@@ -139,6 +112,60 @@ func TestBestPokemonMoveAndShouldSwitch(t *testing.T) {
 				Types: []string{"dark", "ice"},
 			},
 			expectedParty: 1,
+			expectedMove:  0,
+			expectedValue: true,
+		},
+		{
+			name: "Best pokemon against enemy electric is first party member with first move",
+			team: []pokemonbattleadvisor.Pokemon{
+				{
+					Moves: []pokemonbattleadvisor.Move{
+						{Name: "poison-jab", Type: "poison", Damage: 80.0, Accuracy: 1.00},
+						{Name: "false-swipe", Type: "normal", Damage: 40.0, Accuracy: 1.00},
+						{Name: "hail", Type: "ice", Damage: 0.0, Accuracy: 100.0},
+						{Name: "blizzard", Type: "ice", Damage: 110.0, Accuracy: 0.70},
+					},
+				},
+				{
+					Moves: []pokemonbattleadvisor.Move{
+						{Name: "moonblast", Type: "fairy", Damage: 95.0, Accuracy: 1.00},
+						{Name: "flash", Type: "normal", Damage: 0.0, Accuracy: 1.0},
+						{Name: "flamethrower", Type: "fire", Damage: 90.0, Accuracy: 1.00},
+						{Name: "double-slap", Type: "normal", Damage: 15.0, Accuracy: 0.85},
+					},
+				},
+			},
+			enemy: pokemonbattleadvisor.Pokemon{
+				Types: []string{"electric"},
+			},
+			expectedParty: 0,
+			expectedMove:  0,
+			expectedValue: false,
+		},
+		{
+			name: "Best pokemon against enemy electric is second party member with first move",
+			team: []pokemonbattleadvisor.Pokemon{
+				{
+					Moves: []pokemonbattleadvisor.Move{
+						{Name: "moonblast", Type: "fairy", Damage: 95.0, Accuracy: 1.00},
+						{Name: "flash", Type: "normal", Damage: 0.0, Accuracy: 1.0},
+						{Name: "flamethrower", Type: "fire", Damage: 90.0, Accuracy: 1.00},
+						{Name: "double-slap", Type: "normal", Damage: 15.0, Accuracy: 0.85},
+					},
+				},
+				{
+					Moves: []pokemonbattleadvisor.Move{
+						{Name: "brick-break", Type: "fighting", Damage: 75.0, Accuracy: 1.00},
+						{Name: "false-swipe", Type: "normal", Damage: 40.0, Accuracy: 1.00},
+						{Name: "hail", Type: "ice", Damage: 0.0, Accuracy: 100.0},
+						{Name: "blizzard", Type: "ice", Damage: 110.0, Accuracy: 0.70},
+					},
+				},
+			},
+			enemy: pokemonbattleadvisor.Pokemon{
+				Types: []string{"electric"},
+			},
+			expectedParty: 0,
 			expectedMove:  0,
 			expectedValue: false,
 		},

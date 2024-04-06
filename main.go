@@ -32,7 +32,7 @@ func getEnemyPokemon() (enemy pokemonbattleadvisor.Pokemon) {
 		}
 	}
 
-	enemy, err = pokemonbattleadvisor.GetEnemyPokemonByName(classifierResult)
+	enemy, err = pokemonbattleadvisor.PokemonByName(classifierResult)
 	if err != nil {
 		panic(err)
 	}
@@ -47,60 +47,60 @@ func main() {
 			Name: "weavile", Types: []string{"dark", "ice"},
 			Abilities: []string{"pressure"},
 			Moves: []pokemonbattleadvisor.Move{
-				{Name: "poison-jab", Type: "poison"},
-				{Name: "false-swipe", Type: "normal"},
-				{Name: "hail", Type: "ice"},
-				{Name: "blizzard", Type: "ice"},
+				{Name: "poison-jab", Type: "poison", Damage: 80.0, Accuracy: 1.00},
+				{Name: "false-swipe", Type: "normal", Damage: 40.0, Accuracy: 1.00},
+				{Name: "hail", Type: "ice", Damage: 0.0, Accuracy: 100.0},
+				{Name: "blizzard", Type: "ice", Damage: 110.0, Accuracy: 0.70},
 			},
 		},
 		{
 			Name: "clefable", Types: []string{"fairy"},
 			Abilities: []string{"unaware"},
 			Moves: []pokemonbattleadvisor.Move{
-				{Name: "moonblast", Type: "fairy"},
-				{Name: "flash", Type: "normal"},
-				{Name: "flamethrower", Type: "fire"},
-				{Name: "double-slap", Type: "normal"},
+				{Name: "moonblast", Type: "fairy", Damage: 95.0, Accuracy: 1.00},
+				{Name: "flash", Type: "normal", Damage: 0.0, Accuracy: 1.0},
+				{Name: "flamethrower", Type: "fire", Damage: 90.0, Accuracy: 1.00},
+				{Name: "double-slap", Type: "normal", Damage: 15.0, Accuracy: 0.85},
 			},
 		},
 		{
 			Name: "azumarill", Types: []string{"water", "fairy"},
 			Abilities: []string{"huge-power"},
 			Moves: []pokemonbattleadvisor.Move{
-				{Name: "ice-beam", Type: "water"},
-				{Name: "play-rough", Type: "fairy"},
-				{Name: "surf", Type: "water"},
-				{Name: "hydro-pump", Type: "fighting"},
+				{Name: "ice-beam", Type: "water", Damage: 90.0, Accuracy: 1.00},
+				{Name: "play-rough", Type: "fairy", Damage: 90.0, Accuracy: 0.90},
+				{Name: "surf", Type: "water", Damage: 90.0, Accuracy: 1.00},
+				{Name: "hydro-pump", Type: "water", Damage: 110.0, Accuracy: 0.80},
 			},
 		},
 		{
 			Name: "luxray", Types: []string{"electric"},
 			Abilities: []string{"rivalry"},
 			Moves: []pokemonbattleadvisor.Move{
-				{Name: "thunderbolt", Type: "electric"},
-				{Name: "crunch", Type: "dark"},
-				{Name: "flash", Type: "normal"},
-				{Name: "discharge", Type: "electric"},
+				{Name: "thunderbolt", Type: "electric", Damage: 90.0, Accuracy: 1.00},
+				{Name: "crunch", Type: "dark", Damage: 80.0, Accuracy: 1.00},
+				{Name: "flash", Type: "normal", Damage: 0.0, Accuracy: 1.00},
+				{Name: "discharge", Type: "electric", Damage: 80.0, Accuracy: 1.00},
 			},
 		},
 		{
 			Name: "ludicolo", Types: []string{"water", "grass"},
 			Abilities: []string{"swift-swim"},
 			Moves: []pokemonbattleadvisor.Move{
-				{Name: "dive", Type: "water"},
-				{Name: "surf", Type: "water"},
-				{Name: "giga-drain", Type: "grass"},
-				{Name: "energy-ball", Type: "grass"},
+				{Name: "dive", Type: "water", Damage: 80.0, Accuracy: 1.00},
+				{Name: "surf", Type: "water", Damage: 90.0, Accuracy: 1.00},
+				{Name: "giga-drain", Type: "grass", Damage: 75.0, Accuracy: 1.00},
+				{Name: "energy-ball", Type: "grass", Damage: 90.0, Accuracy: 1.00},
 			},
 		},
 		{
 			Name: "sceptile", Types: []string{"grass"},
 			Abilities: []string{"overgrow"},
 			Moves: []pokemonbattleadvisor.Move{
-				{Name: "cut", Type: "normal"},
-				{Name: "dig", Type: "ground"},
-				{Name: "energy-ball", Type: "grass"},
-				{Name: "giga-drain", Type: "grass"},
+				{Name: "cut", Type: "normal", Damage: 50.0, Accuracy: 0.95},
+				{Name: "dig", Type: "ground", Damage: 80.0, Accuracy: 1.00},
+				{Name: "energy-ball", Type: "grass", Damage: 90.0, Accuracy: 1.00},
+				{Name: "giga-drain", Type: "grass", Damage: 75.0, Accuracy: 1.00},
 			},
 		},
 	}
