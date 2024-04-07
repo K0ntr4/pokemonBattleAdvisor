@@ -1,6 +1,7 @@
 package pokemonbattleadvisor
 
 import (
+	"fmt"
 	"github.com/kbinani/screenshot"
 	"image"
 	"image/png"
@@ -9,7 +10,7 @@ import (
 
 const defaultScreenshotPath = "screenshot.png"
 
-var cropBoarderByResolutions = map[[2]int]image.Rectangle{
+var cropBoarderByResolutions = map[[2]int]image.Rectangle{ // Crop boarder for different resolutions for pokemon revolution
 	{3840, 2160}: image.Rect(1900, 700, 2400, 1000),
 	{2560, 1440}: image.Rect(1250, 450, 1600, 800),
 	{1920, 1080}: image.Rect(950, 350, 1200, 500),
@@ -31,6 +32,10 @@ func save(img *image.RGBA, filePath string) (err error) {
 }
 
 func getBounds(rectangle image.Rectangle) image.Rectangle {
+	if cropBoarderByResolutions[[2]int{rectangle.Dx(), rectangle.Dy()}] == (image.Rectangle{}) {
+		fmt.Printf("Resolution %dx%d is not supported please get enemy pokemon by name directly for improved accuracy\n", rectangle.Dx(), rectangle.Dy())
+		return image.Rect(0, 0, rectangle.Dx(), rectangle.Dy())
+	}
 	return cropBoarderByResolutions[[2]int{rectangle.Dx(), rectangle.Dy()}]
 }
 

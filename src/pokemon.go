@@ -46,7 +46,7 @@ type Move struct {
 	Rank     int     `json:"rank"`
 	Name     string  `json:"name"`
 	Type     string  `json:"type"`
-	Damage   int     `json:"damage"`
+	Damage   float64 `json:"damage"`
 	Accuracy float64 `json:"accuracy"`
 }
 

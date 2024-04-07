@@ -7,6 +7,135 @@ import (
 	"testing"
 )
 
+func TestGetHelperStructsMove(t *testing.T) {
+	testCases := []struct {
+		name             string
+		moveName         string
+		expectedName     string
+		expectedType     string
+		expectedDamage   float64
+		expectedAccuracy float64
+		expectedError    bool
+	}{
+		{
+			name:             "Test get move by name tackle",
+			moveName:         "tackle",
+			expectedName:     "tackle",
+			expectedType:     "normal",
+			expectedDamage:   40.0,
+			expectedAccuracy: 1.0,
+			expectedError:    false,
+		},
+		{
+			name:             "Test get move by name razor-leaf",
+			moveName:         "razor-leaf",
+			expectedName:     "razor-leaf",
+			expectedType:     "grass",
+			expectedDamage:   55.0,
+			expectedAccuracy: 0.95,
+			expectedError:    false,
+		},
+		{
+			name:             "Test get move by name double-slap",
+			moveName:         "double-slap",
+			expectedName:     "double-slap",
+			expectedType:     "normal",
+			expectedDamage:   45.0,
+			expectedAccuracy: 0.85,
+			expectedError:    false,
+		},
+		{
+			name:             "Test get move by name invalid",
+			moveName:         "invalid",
+			expectedName:     "",
+			expectedType:     "",
+			expectedDamage:   0.0,
+			expectedAccuracy: 0.0,
+			expectedError:    true,
+		},
+	}
+
+	for _, tc := range testCases {
+		testCase := tc
+		t.Run(testCase.name, func(t *testing.T) {
+			actual, err := pokemonbattleadvisor.GetHelperStructsMove(testCase.moveName)
+			if err != nil {
+				if !testCase.expectedError {
+					t.Errorf("Expected no error, got %v", err)
+				}
+				return
+			}
+
+			if actual.Name != testCase.expectedName {
+				t.Errorf("Expected name: %s, got: %s", testCase.expectedName, actual.Name)
+			}
+
+			if actual.Type != testCase.expectedType {
+				t.Errorf("Expected type: %s, got: %s", testCase.expectedType, actual.Type)
+			}
+
+			if actual.Damage != testCase.expectedDamage {
+				t.Errorf("Expected damage: %f, got: %f", testCase.expectedDamage, actual.Damage)
+			}
+
+			if actual.Accuracy != testCase.expectedAccuracy {
+				t.Errorf("Expected accuracy: %f, got: %f", testCase.expectedAccuracy, actual.Accuracy)
+			}
+		})
+	}
+}
+
+func TestGetHelperStructsTypes(t *testing.T) {
+	testCases := []struct {
+		name          string
+		pokemonName   string
+		expectedTypes []string
+		expectedError bool
+	}{
+		{
+			name:          "Test get types by name bulbasaur",
+			pokemonName:   "bulbasaur",
+			expectedTypes: []string{"grass", "poison"},
+			expectedError: false,
+		},
+		{
+			name:          "Test get types by name charmander",
+			pokemonName:   "charmander",
+			expectedTypes: []string{"fire"},
+			expectedError: false,
+		},
+		{
+			name:          "Test get types by name invalid",
+			pokemonName:   "invalid",
+			expectedTypes: []string{},
+			expectedError: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		testCase := tc
+		t.Run(testCase.name, func(t *testing.T) {
+			actual, err := pokemonbattleadvisor.GetHelperStructsTypes(testCase.pokemonName)
+			if err != nil {
+				if !testCase.expectedError {
+					t.Errorf("Expected no error, got %v", err)
+				}
+				return
+			}
+
+			if len(actual) != len(testCase.expectedTypes) {
+				t.Errorf("Expected types length: %d, got: %d", len(testCase.expectedTypes), len(actual))
+			}
+
+			for i, typ := range actual {
+				if typ != testCase.expectedTypes[i] {
+					t.Errorf("Expected type at index %d: %s, got: %s", i, testCase.expectedTypes[i], typ)
+				}
+			}
+		})
+	}
+}
+
 func TestPokemonByName(t *testing.T) {
 	testCases := []struct {
 		name              string
@@ -152,7 +281,7 @@ func TestCastToHelperStructsPokemon(t *testing.T) {
 					URL  string `json:"url"`
 				}{
 					Name: "tackle",
-					URL:  "https://pokeapi.co/api/v2/move/1/",
+					URL:  "https://pokeapi.co/api/v2/move/33/",
 				},
 			},
 			{
@@ -162,6 +291,15 @@ func TestCastToHelperStructsPokemon(t *testing.T) {
 				}{
 					Name: "razor-leaf",
 					URL:  "https://pokeapi.co/api/v2/move/75/",
+				},
+			},
+			{
+				Move: struct {
+					Name string `json:"name"`
+					URL  string `json:"url"`
+				}{
+					Name: "double-slap",
+					URL:  "https://pokeapi.co/api/v2/move/3/",
 				},
 			},
 		},
@@ -241,8 +379,9 @@ func TestCastToHelperStructsPokemon(t *testing.T) {
 		Name:      "bulbasaur",
 		Abilities: []string{"overgrow", "sap-sipper"},
 		Moves: []pokemonbattleadvisor.Move{
-			{Name: "tackle", Type: "normal"},
-			{Name: "razor-leaf", Type: "grass"},
+			{Name: "tackle", Type: "normal", Damage: 40.0, Accuracy: 1.0},
+			{Name: "razor-leaf", Type: "grass", Damage: 55.0, Accuracy: 0.95},
+			{Name: "double-slap", Type: "normal", Damage: 45.0, Accuracy: 0.85},
 		},
 		Types: []string{"grass", "poison"},
 	}
