@@ -5,8 +5,39 @@ import (
 	"fmt"
 	"github.com/mtslzr/pokeapi-go"
 	"github.com/mtslzr/pokeapi-go/structs"
+	"github.com/olekukonko/tablewriter"
 	"math/big"
+	"os"
+	"strings"
 )
+
+func getMoveIgnoreError(name string) Move {
+	move, err := GetHelperStructsMove(name)
+	if err != nil {
+		return Move{}
+	}
+	return move
+}
+
+func getTypesIgnoreError(pokemonName string) []string {
+	types, err := GetHelperStructsTypes(pokemonName)
+	if err != nil {
+		return []string{}
+	}
+	return types
+}
+
+func GetPartyPokemon(name string, abilities, moves []string) (pokemon Pokemon) {
+	pokemon = Pokemon{
+		Name:      name,
+		Types:     getTypesIgnoreError(name),
+		Abilities: abilities,
+	}
+	for _, move := range moves {
+		pokemon.Moves = append(pokemon.Moves, getMoveIgnoreError(move))
+	}
+	return pokemon
+}
 
 func GetHelperStructsTypes(pokemonName string) (types []string, err error) {
 	var p structs.Pokemon
@@ -99,39 +130,43 @@ func PokemonByName(name string) (pokemon Pokemon, err error) {
 }
 
 func PrintHelperStructsMove(move *Move) {
-	println(move.Name)
-	for range move.Name {
-		print("-")
+	data := [][]string{
+		{"Name", move.Name},
+		{"Type", move.Type},
+		{"Damage", fmt.Sprintf("%.1f", move.Damage)},
+		{"Accuracy", fmt.Sprintf("%.1f", move.Accuracy)},
 	}
-	println()
-	println("Type: ", move.Type)
-	fmt.Printf("Damage: %.1f\n", move.Damage)
-	fmt.Printf("Accuracy: %.1f\n", move.Accuracy)
+
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Attribute", "Value"})
+
+	for _, v := range data {
+		table.Append(v)
+	}
+	table.Render()
 }
 
 func PrintHelperStructsPokemon(pokemon *Pokemon) {
-	println(pokemon.Name)
-	for range pokemon.Name {
-		print("-")
+	pokemonTable := tablewriter.NewWriter(os.Stdout)
+	pokemonTable.SetHeader([]string{"Attribute", "Value"})
+	pokemonTable.Append([]string{"Name", pokemon.Name})
+	pokemonTable.Append([]string{"Types", strings.Join(pokemon.Types, ", ")})
+	pokemonTable.Append([]string{"Abilities", strings.Join(pokemon.Abilities, ", ")})
+	for i, move := range pokemon.Moves {
+		moveData := []string{
+			fmt.Sprintf("Move #%d", i+1),
+			fmt.Sprintf("Name: %s\nType: %s\nDamage: %.1f\nAccuracy: %.1f", move.Name, move.Type, move.Damage, move.Accuracy),
+		}
+		pokemonTable.Append(moveData)
 	}
-	println()
-	println("Types: ")
-	for _, t := range pokemon.Types {
-		println(t)
-	}
-	println("Abilities: ")
-	for _, ability := range pokemon.Abilities {
-		println(ability)
-	}
-	println("Moves:")
-	for i := 0; i < len(pokemon.Moves); i++ {
-		PrintHelperStructsMove(&pokemon.Moves[i])
-	}
-	println()
+	pokemonTable.Render()
 }
 
 func PrintParty(party *[]Pokemon) {
 	for i := 0; i < len(*party); i++ {
 		PrintHelperStructsPokemon(&(*party)[i])
+		if i < len(*party)-1 {
+			fmt.Println()
+		}
 	}
 }

@@ -46,9 +46,9 @@ func TestGetEnemyPokemonByName(t *testing.T) {
 				t.Errorf("Expected abilities length: %d, got: %d", len(testCase.expectedAbilities), len(enemy.Abilities))
 			}
 
-			for _, ability := range enemy.Abilities {
-				if !slices.Contains(testCase.expectedAbilities, ability) {
-					t.Errorf("Expected ability: %s, got: %s", testCase.expectedAbilities, ability)
+			for _, ability := range testCase.expectedAbilities {
+				if !slices.Contains(enemy.Abilities, ability) {
+					t.Errorf("Expected ability: %s, got: %s", ability, enemy.Abilities)
 				}
 			}
 
@@ -56,9 +56,9 @@ func TestGetEnemyPokemonByName(t *testing.T) {
 				t.Errorf("Expected types length: %d, got: %d", len(testCase.expectedTypes), len(enemy.Types))
 			}
 
-			for _, typ := range enemy.Types {
-				if !slices.Contains(testCase.expectedTypes, typ) {
-					t.Errorf("Expected type: %s, got: %s", testCase.expectedTypes, typ)
+			for _, typ := range testCase.expectedTypes {
+				if !slices.Contains(enemy.Types, typ) {
+					t.Errorf("Expected type: %s, got: %s", typ, enemy.Types)
 				}
 			}
 		})

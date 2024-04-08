@@ -41,34 +41,10 @@ The Pokemon Battle Advisor provides a convenient way to strategize and optimize 
 1. **Define Your Party:**
 
    ```go
-    func getMoveIgnoreError(name string) pokemonbattleadvisor.Move {
-        move, err := pokemonbattleadvisor.GetHelperStructsMove(name)
-        if err != nil {
-            return pokemonbattleadvisor.Move{}
-        }
-        return move
-    }
-    
-    func getTypesIgnoreError(pokemonName string) []string {
-        types, err := pokemonbattleadvisor.GetHelperStructsTypes(pokemonName)
-        if err != nil {
-            return []string{}
-        }
-        return types
-    }
-    
     func main() {
         var party = []pokemonbattleadvisor.Pokemon{
-        {
-            Name: "weavile", Types: getTypesIgnoreError("weavile"),
-            Abilities: []string{"pressure"},
-            Moves: []pokemonbattleadvisor.Move{
-                getMoveIgnoreError("poison-jab"),
-                getMoveIgnoreError("false-swipe"),
-                getMoveIgnoreError("hail"),
-                getMoveIgnoreError("blizzard"),
-            },
-        },
+		    pokemonbattleadvisor.GetPartyPokemon("weavile", []string{"pressure"}, []string{"poison-jab", "false-swipe", "hail", "blizzard"}),
+        }
         // Add more party members as needed
     }
    ```
@@ -80,7 +56,7 @@ The Pokemon Battle Advisor provides a convenient way to strategize and optimize 
    ```go
    func getEnemyPokemon() (enemy pokemonbattleadvisor.Pokemon) {
        // Capture a screenshot of the battle
-       screenshot, err := pokemonbattleadvisor.TakeScreenshot()
+       screenshot, err = pokemonbattleadvisor.TakeScreenshot(0, 1250, 450, 1600, 800) // Adjust display and coordinates as needed
        if err != nil {
            return
        }
@@ -140,5 +116,6 @@ The Pokemon Battle Advisor project utilizes several external libraries and resou
 - [imjeffhi/pokemon_classifier](https://huggingface.co/imjeffhi/pokemon_classifier): Utilizes a Hugging Face model for Pokemon classification.
 - [sajari/fuzzy](https://pkg.go.dev/github.com/sajari/fuzzy@v1.0.0): Implements fuzzy search functionality for improved user experience.
 - [kbinani/screenshot](https://pkg.go.dev/github.com/kbinani/screenshot@v0.0.0-20230812210009-b87d31814237): Enables capturing screenshots for automatic enemy detection.
+- [olekukonko/typewriter](https://pkg.go.dev/github.com/olekukonko/tablewriter@v0.0.5): Provides table formatting functionality for improved output presentation.
 
 Special thanks to the developers and maintainers of these libraries for their contributions to the Pokemon Battle Advisor project. Their work greatly enhances the functionality and usability of the tool.

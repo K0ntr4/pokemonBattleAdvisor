@@ -17,7 +17,7 @@ func getEnemyPokemon() (enemy pokemonbattleadvisor.Pokemon) {
 	var screenshot string
 	var classifierResult string
 
-	screenshot, err = pokemonbattleadvisor.TakeScreenshot()
+	screenshot, err = pokemonbattleadvisor.TakeScreenshot(0, 1250, 450, 1600, 800)
 	if err != nil {
 		return
 	}
@@ -40,85 +40,15 @@ func getEnemyPokemon() (enemy pokemonbattleadvisor.Pokemon) {
 	return enemy
 }
 
-func getMoveIgnoreError(name string) pokemonbattleadvisor.Move {
-	move, err := pokemonbattleadvisor.GetHelperStructsMove(name)
-	if err != nil {
-		return pokemonbattleadvisor.Move{}
-	}
-	return move
-}
-
-func getTypesIgnoreError(pokemonName string) []string {
-	types, err := pokemonbattleadvisor.GetHelperStructsTypes(pokemonName)
-	if err != nil {
-		return []string{}
-	}
-	return types
-}
-
 func main() {
 	var enemy = getEnemyPokemon()
 	var party = []pokemonbattleadvisor.Pokemon{
-		{
-			Name: "weavile", Types: getTypesIgnoreError("weavile"),
-			Abilities: []string{"pressure"},
-			Moves: []pokemonbattleadvisor.Move{
-				getMoveIgnoreError("poison-jab"),
-				getMoveIgnoreError("false-swipe"),
-				getMoveIgnoreError("hail"),
-				getMoveIgnoreError("blizzard"),
-			},
-		},
-		{
-			Name: "clefable", Types: getTypesIgnoreError("clefable"),
-			Abilities: []string{"unaware"},
-			Moves: []pokemonbattleadvisor.Move{
-				getMoveIgnoreError("moonblast"),
-				getMoveIgnoreError("flash"),
-				getMoveIgnoreError("flamethrower"),
-				getMoveIgnoreError("double-slap"),
-			},
-		},
-		{
-			Name: "azumarill", Types: getTypesIgnoreError("azumarill"),
-			Abilities: []string{"huge-power"},
-			Moves: []pokemonbattleadvisor.Move{
-				getMoveIgnoreError("ice-beam"),
-				getMoveIgnoreError("play-rough"),
-				getMoveIgnoreError("surf"),
-				getMoveIgnoreError("hydro-pump"),
-			},
-		},
-		{
-			Name: "luxray", Types: getTypesIgnoreError("luxray"),
-			Abilities: []string{"rivalry"},
-			Moves: []pokemonbattleadvisor.Move{
-				getMoveIgnoreError("thunderbolt"),
-				getMoveIgnoreError("crunch"),
-				getMoveIgnoreError("flash"),
-				getMoveIgnoreError("discharge"),
-			},
-		},
-		{
-			Name: "ludicolo", Types: getTypesIgnoreError("ludicolo"),
-			Abilities: []string{"swift-swim"},
-			Moves: []pokemonbattleadvisor.Move{
-				getMoveIgnoreError("dive"),
-				getMoveIgnoreError("surf"),
-				getMoveIgnoreError("giga-drain"),
-				getMoveIgnoreError("energy-ball"),
-			},
-		},
-		{
-			Name: "sceptile", Types: getTypesIgnoreError("sceptile"),
-			Abilities: []string{"overgrow"},
-			Moves: []pokemonbattleadvisor.Move{
-				getMoveIgnoreError("cut"),
-				getMoveIgnoreError("dig"),
-				getMoveIgnoreError("energy-ball"),
-				getMoveIgnoreError("giga-drain"),
-			},
-		},
+		pokemonbattleadvisor.GetPartyPokemon("weavile", []string{"pressure"}, []string{"poison-jab", "false-swipe", "hail", "blizzard"}),
+		pokemonbattleadvisor.GetPartyPokemon("clefable", []string{"unaware"}, []string{"moonblast", "flash", "flamethrower", "double-slap"}),
+		pokemonbattleadvisor.GetPartyPokemon("azumarill", []string{"huge-power"}, []string{"ice-beam", "play-rough", "surf", "hydro-pump"}),
+		pokemonbattleadvisor.GetPartyPokemon("luxray", []string{"rivalry"}, []string{"thunderbolt", "crunch", "flash", "discharge"}),
+		pokemonbattleadvisor.GetPartyPokemon("ludicolo", []string{"swift-swim"}, []string{"dive", "surf", "giga-drain", "energy-ball"}),
+		pokemonbattleadvisor.GetPartyPokemon("sceptile", []string{"overgrow"}, []string{"cut", "dig", "energy-ball", "giga-drain"}),
 	}
 	pokemonbattleadvisor.PrintParty(&party)
 
@@ -126,9 +56,11 @@ func main() {
 	if shouldSwitch {
 		fmt.Println("Should switch")
 		fmt.Printf("Best party member: %s\n", party[partyMember].Name)
-		fmt.Printf("Best move: %s\n", party[partyMember].Moves[move].Name)
+		fmt.Println("Best move:")
+		pokemonbattleadvisor.PrintHelperStructsMove(&party[partyMember].Moves[move])
 	} else {
 		fmt.Println("Should not switch")
-		fmt.Printf("Best move: %s\n", party[0].Moves[move].Name)
+		fmt.Println("Best move:")
+		pokemonbattleadvisor.PrintHelperStructsMove(&party[partyMember].Moves[move])
 	}
 }

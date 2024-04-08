@@ -7,6 +7,115 @@ import (
 	"testing"
 )
 
+func TestGetPartyPokemon(t *testing.T) {
+	testCases := []struct {
+		name              string
+		pokemonName       string
+		abilities         []string
+		moves             []string
+		expectedName      string
+		expectedAbilities []string
+		expectedTypes     []string
+		expectedMoves     []pokemonbattleadvisor.Move
+	}{
+		{
+			name:              "Test get party pokemon weavile",
+			pokemonName:       "weavile",
+			abilities:         []string{"pressure"},
+			moves:             []string{"poison-jab", "false-swipe", "hail", "blizzard"},
+			expectedName:      "weavile",
+			expectedAbilities: []string{"pressure"},
+			expectedTypes:     []string{"dark", "ice"},
+			expectedMoves: []pokemonbattleadvisor.Move{
+				{Name: "poison-jab", Type: "poison", Damage: 80.0, Accuracy: 1.0},
+				{Name: "false-swipe", Type: "normal", Damage: 40.0, Accuracy: 1.0},
+				{Name: "hail", Type: "ice", Damage: 0.0, Accuracy: 0.0},
+				{Name: "blizzard", Type: "ice", Damage: 110.0, Accuracy: 0.7},
+			},
+		},
+		{
+			name:              "Test get party pokemon clefable",
+			pokemonName:       "clefable",
+			abilities:         []string{"unaware"},
+			moves:             []string{"moonblast", "flash", "flamethrower", "double-slap"},
+			expectedName:      "clefable",
+			expectedAbilities: []string{"unaware"},
+			expectedTypes:     []string{"fairy"},
+			expectedMoves: []pokemonbattleadvisor.Move{
+				{Name: "moonblast", Type: "fairy", Damage: 95.0, Accuracy: 1.0},
+				{Name: "flash", Type: "normal", Damage: 0.0, Accuracy: 1.0},
+				{Name: "flamethrower", Type: "fire", Damage: 90.0, Accuracy: 1.0},
+				{Name: "double-slap", Type: "normal", Damage: 45.0, Accuracy: 0.85},
+			},
+		},
+		{
+			name:              "Test get party pokemon azumarill",
+			pokemonName:       "azumarill",
+			abilities:         []string{"huge-power"},
+			moves:             []string{"ice-beam", "play-rough", "surf", "hydro-pump"},
+			expectedName:      "azumarill",
+			expectedAbilities: []string{"huge-power"},
+			expectedTypes:     []string{"water", "fairy"},
+			expectedMoves: []pokemonbattleadvisor.Move{
+				{Name: "ice-beam", Type: "ice", Damage: 90.0, Accuracy: 1.0},
+				{Name: "play-rough", Type: "fairy", Damage: 90.0, Accuracy: 0.9},
+				{Name: "surf", Type: "water", Damage: 90.0, Accuracy: 1.0},
+				{Name: "hydro-pump", Type: "water", Damage: 110.0, Accuracy: 0.8},
+			},
+		},
+		{
+			name:              "Test get party pokemon charmander",
+			pokemonName:       "charmander",
+			abilities:         []string{"blaze"},
+			moves:             []string{"ember", "flamethrower", "fire-blast", "fire-spin"},
+			expectedName:      "charmander",
+			expectedAbilities: []string{"blaze"},
+			expectedTypes:     []string{"fire"},
+			expectedMoves: []pokemonbattleadvisor.Move{
+				{Name: "ember", Type: "fire", Damage: 40.0, Accuracy: 1.0},
+				{Name: "flamethrower", Type: "fire", Damage: 90.0, Accuracy: 1.0},
+				{Name: "fire-blast", Type: "fire", Damage: 110.0, Accuracy: 0.85},
+				{Name: "fire-spin", Type: "fire", Damage: 35.0, Accuracy: 0.85},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		testCase := tc
+		t.Run(testCase.name, func(t *testing.T) {
+			actual := pokemonbattleadvisor.GetPartyPokemon(testCase.pokemonName, testCase.abilities, testCase.moves)
+
+			if actual.Name != testCase.expectedName {
+				t.Errorf("Expected name: %s, got: %s", testCase.expectedName, actual.Name)
+			}
+
+			if len(actual.Abilities) != len(testCase.expectedAbilities) {
+				t.Errorf("Expected abilities length: %d, got: %d", len(testCase.expectedAbilities), len(actual.Abilities))
+			}
+
+			for i, ability := range actual.Abilities {
+				if ability != testCase.expectedAbilities[i] {
+					t.Errorf("Expected ability at index %d: %s, got: %s", i, testCase.expectedAbilities[i], ability)
+				}
+			}
+
+			if len(actual.Types) != len(testCase.expectedTypes) {
+				t.Errorf("Expected types length: %d, got: %d", len(testCase.expectedTypes), len(actual.Types))
+			}
+
+			if len(actual.Moves) != len(testCase.expectedMoves) {
+				t.Errorf("Expected moves length: %d, got: %d", len(testCase.expectedMoves), len(actual.Moves))
+			}
+
+			for _, move := range testCase.expectedMoves {
+				if !slices.Contains(actual.Moves, move) {
+					t.Errorf("Expected move: %v, got: %v", move, actual.Moves)
+				}
+			}
+		})
+	}
+}
+
 func TestGetHelperStructsMove(t *testing.T) {
 	testCases := []struct {
 		name             string
@@ -175,9 +284,9 @@ func TestPokemonByName(t *testing.T) {
 				t.Errorf("Expected abilities length: %d, got: %d", len(tc.expectedAbilities), len(actual.Abilities))
 			}
 
-			for i, ability := range actual.Abilities {
-				if !slices.Contains(tc.expectedAbilities, ability) {
-					t.Errorf("Expected ability at index %d: %s, got: %s", i, tc.expectedAbilities[i], ability)
+			for i, ability := range tc.expectedAbilities {
+				if !slices.Contains(actual.Abilities, ability) {
+					t.Errorf("Expected ability at index %d: %s, got: %s", i, ability, actual.Abilities[i])
 				}
 			}
 
@@ -185,9 +294,9 @@ func TestPokemonByName(t *testing.T) {
 				t.Errorf("Expected types length: %d, got: %d", len(tc.expectedTypes), len(actual.Types))
 			}
 
-			for i, typ := range actual.Types {
-				if !slices.Contains(tc.expectedTypes, typ) {
-					t.Errorf("Expected type at index %d: %s, got: %s", i, tc.expectedTypes[i], typ)
+			for i, typ := range tc.expectedTypes {
+				if !slices.Contains(actual.Types, typ) {
+					t.Errorf("Expected type at index %d: %s, got: %s", i, typ, actual.Types[i])
 				}
 			}
 		})
@@ -406,9 +515,9 @@ func TestCastToHelperStructsPokemon(t *testing.T) {
 		t.Errorf("Expected moves length: %d, got: %d", len(expected.Moves), len(actual.Moves))
 	}
 
-	for _, move := range actual.Moves {
-		if !slices.Contains(expected.Moves, move) {
-			t.Errorf("Expected move: %v, got: %v", move, expected.Moves)
+	for _, move := range expected.Moves {
+		if !slices.Contains(actual.Moves, move) {
+			t.Errorf("Expected move: %v, got: %v", move, actual.Moves)
 		}
 	}
 
